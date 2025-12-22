@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artisan Bread Calculator</title>
+    <meta name="description" content="Precision calculator for sourdough and yeast breads.">
+    
+    <link rel="manifest" href="manifest.json">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <main class="app-container">
+        <header>
+            <h1>The Bread Calculator</h1>
+            <p class="subtitle">Artisan Baker's Math</p>
+        </header>
+
+        <section class="card input-section">
+            <h2>Formulation</h2>
+            
+            <div class="input-group">
+                <label for="total-flour">Total Flour (g)</label>
+                <input type="number" id="total-flour" value="1000" inputmode="numeric">
+            </div>
+
+            <div class="input-group">
+                <label for="hydration">Hydration (%)</label>
+                <input type="number" id="hydration" value="75" inputmode="numeric">
+            </div>
+
+            <div class="input-group">
+                <label for="salt">Salt (%)</label>
+                <input type="number" id="salt" value="2" inputmode="numeric">
+            </div>
+
+            <div class="input-group">
+                <label for="starter">Starter/Yeast (%)</label>
+                <input type="number" id="starter" value="20" inputmode="numeric">
+            </div>
+
+            <button id="calculate-btn">Calculate Recipe</button>
+        </section>
+
+        <section class="card results-section hidden" id="results">
+            <h2>Final Ratios</h2>
+            <div class="result-row">
+                <span>Flour</span>
+                <span id="res-flour">0g</span>
+            </div>
+            <div class="result-row">
+                <span>Water</span>
+                <span id="res-water">0g</span>
+            </div>
+            <div class="result-row">
+                <span>Salt</span>
+                <span id="res-salt">0g</span>
+            </div>
+            <div class="result-row">
+                <span>Starter</span>
+                <span id="res-starter">0g</span>
+            </div>
+            <hr>
+            <div class="result-row total">
+                <span>Total Weight</span>
+                <span id="res-total">0g</span>
+            </div>
+        </section>
+
+        <footer>
+            <small>&copy; Artisan Web Tools</small>
+        </footer>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
