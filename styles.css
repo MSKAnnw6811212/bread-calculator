@@ -1,0 +1,158 @@
+/* --- Variables & Reset --- */
+:root {
+    --bg-paper: #f4f1ea;
+    --text-primary: #1a1a1a;
+    --text-secondary: #555555;
+    --accent-gold: #cba35c;
+    --border-elegant: #e0dcd3;
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Lato', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-paper);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* --- Layout --- */
+.app-container {
+    width: 100%;
+    max-width: 480px; /* Mobile-first, card-like constraint */
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+/* --- Typography --- */
+h1, h2 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+h1 {
+    font-size: 2.5rem;
+    letter-spacing: -0.02em;
+    text-align: center;
+    margin-bottom: 0.2rem;
+}
+
+.subtitle {
+    text-align: center;
+    color: var(--accent-gold);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+/* --- Cards --- */
+.card {
+    background: #ffffff; /* Slight lift from paper bg, or keep transparent for flatter look */
+    background: transparent;
+    border: 1px solid var(--border-elegant);
+    padding: 2rem;
+    border-radius: 4px;
+}
+
+.card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-elegant);
+    padding-bottom: 0.5rem;
+}
+
+/* --- Inputs --- */
+.input-group {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+input {
+    font-family: var(--font-sans);
+    font-size: 1.2rem;
+    padding: 10px;
+    border: 1px solid var(--border-elegant);
+    background-color: #fdfdfc;
+    color: var(--text-primary);
+    border-radius: 2px;
+    transition: border-color 0.3s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--accent-gold);
+}
+
+/* --- Buttons --- */
+button {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--accent-gold);
+    color: #fff;
+    border: none;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    margin-top: 1rem;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+/* --- Results --- */
+.hidden {
+    display: none;
+}
+
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem 0;
+    font-size: 1.1rem;
+}
+
+.result-row.total {
+    font-weight: 700;
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    color: var(--accent-gold);
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid var(--border-elegant);
+    margin: 1rem 0;
+}
+
+footer {
+    text-align: center;
+    color: var(--border-elegant); /* Very subtle footer */
+    margin-top: auto;
+}
