@@ -156,3 +156,55 @@ footer {
     color: var(--border-elegant); /* Very subtle footer */
     margin-top: auto;
 }
+/* --- New Additions for V2 --- */
+
+/* The Dropdown Menu */
+select {
+    font-family: var(--font-serif); /* Serif makes it feel like a menu */
+    font-size: 1.1rem;
+    padding: 10px;
+    border: 1px solid var(--border-elegant);
+    background-color: #fdfdfc;
+    color: var(--text-primary);
+    border-radius: 2px;
+    width: 100%;
+    cursor: pointer;
+}
+
+/* Subtle Divider */
+.subtle-divider {
+    border: 0;
+    border-top: 1px dashed var(--border-elegant);
+    margin: 1.5rem 0;
+    opacity: 0.6;
+}
+
+/* Mode Toggles (Radio Buttons) */
+.mode-toggle {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 1.5rem;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.mode-label {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    color: var(--text-primary);
+}
+
+/* Custom Accent for Radio Buttons */
+input[type="radio"] {
+    accent-color: var(--accent-gold);
+    transform: scale(1.2);
+}
