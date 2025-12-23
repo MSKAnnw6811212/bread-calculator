@@ -4,103 +4,140 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Artisan Bread Calculator</title>
-    <meta name="description" content="Precision calculator for sourdough and yeast breads.">
-    
+    <meta name="description" content="Professional dough scaling, levain, and temperature calculator.">
     <link rel="manifest" href="manifest.json">
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
     <main class="app-container">
         <header>
-            <h1>The Bread Calculator</h1>
-            <p class="subtitle">Artisan Baker's Math</p>
+            <h1>Artisan Bread Calc</h1>
+            <p class="subtitle">Advanced Baker's Math</p>
         </header>
 
-       <section class="card input-section">
-            <h2>Formulation</h2>
-
+        <section class="card">
+            <h2>Dough Formulation</h2>
+            
             <div class="input-group">
-                <label for="recipe-preset">Load a Recipe</label>
+                <label for="recipe-preset">Recipe Preset</label>
                 <select id="recipe-preset">
                     <option value="">-- Custom Ratio --</option>
-                    <option value="sourdough">Classic Sourdough (75%)</option>
-                    <option value="focaccia">Focaccia / Ciabatta (85%)</option>
-                    <option value="pizza">Neapolitan Pizza (62%)</option>
-                    <option value="bagel">NY Style Bagel (58%)</option>
+                    <option value="sourdough">Classic Sourdough</option>
+                    <option value="focaccia">Focaccia (High Hydration)</option>
+                    <option value="pizza">Neapolitan Pizza</option>
+                    <option value="bagel">NY Style Bagel</option>
+                    <option value="wholewheat">Whole Wheat (thirsty)</option>
+                    <option value="ciabatta">Ciabatta</option>
                 </select>
+                <div id="recipe-tip" class="tip-box hidden"></div>
             </div>
-            
+
             <hr class="subtle-divider">
 
-            <div class="mode-toggle">
-                <span class="mode-label">Calculate by:</span>
-                <label class="radio-label">
-                    <input type="radio" name="calc-mode" value="flour" checked> Flour
-                </label>
-                <label class="radio-label">
-                    <input type="radio" name="calc-mode" value="dough"> Total Dough
-                </label>
+            <div class="mode-toggle-group">
+                <label>Mode:</label>
+                <div class="radio-group">
+                    <label class="radio-btn">
+                        <input type="radio" name="calc-mode" value="flour" checked> 
+                        <span>By Flour</span>
+                    </label>
+                    <label class="radio-btn">
+                        <input type="radio" name="calc-mode" value="dough"> 
+                        <span>Total</span>
+                    </label>
+                    <label class="radio-btn">
+                        <input type="radio" name="calc-mode" value="batch"> 
+                        <span>Batch</span>
+                    </label>
+                </div>
             </div>
 
-            <div class="input-group">
-                <label id="primary-label" for="primary-weight">Total Flour (g)</label>
+            <div id="input-area" class="input-group">
+                <label for="primary-weight">Total Flour (g)</label>
                 <input type="number" id="primary-weight" value="1000" inputmode="numeric">
             </div>
 
-            <div class="input-group">
-                <label for="hydration">Hydration (%)</label>
-                <input type="number" id="hydration" value="75" inputmode="numeric">
+            <div class="split-inputs">
+                <div class="input-group">
+                    <label for="hydration">Hydration %</label>
+                    <input type="number" id="hydration" value="75" inputmode="numeric">
+                </div>
+                <div class="input-group">
+                    <label for="salt">Salt %</label>
+                    <input type="number" id="salt" value="2" inputmode="numeric">
+                </div>
+                <div class="input-group">
+                    <label for="starter">Starter %</label>
+                    <input type="number" id="starter" value="20" inputmode="numeric">
+                </div>
             </div>
 
-            <div class="input-group">
-                <label for="salt">Salt (%)</label>
-                <input type="number" id="salt" value="2" inputmode="numeric">
-            </div>
-
-            <div class="input-group">
-                <label for="starter">Starter/Yeast (%)</label>
-                <input type="number" id="starter" value="20" inputmode="numeric">
+            <div id="true-hydration-badge" class="badge hidden">
+                True Hydration: <span id="true-val">76%</span> <span id="hydration-desc">(Moderate)</span>
             </div>
 
             <button id="calculate-btn">Calculate Recipe</button>
         </section>
 
         <section class="card results-section hidden" id="results">
-            <h2>Final Ratios</h2>
-            <div class="result-row">
-                <span>Flour</span>
-                <span id="res-flour">0g</span>
-            </div>
-            <div class="result-row">
-                <span>Water</span>
-                <span id="res-water">0g</span>
-            </div>
-            <div class="result-row">
-                <span>Salt</span>
-                <span id="res-salt">0g</span>
-            </div>
-            <div class="result-row">
-                <span>Starter</span>
-                <span id="res-starter">0g</span>
-            </div>
+            <h2>Final Recipe</h2>
+            <div class="result-row"><span>Flour</span> <span id="res-flour">0g</span></div>
+            <div class="result-row"><span>Water</span> <span id="res-water">0g</span></div>
+            <div class="result-row"><span>Salt</span> <span id="res-salt">0g</span></div>
+            <div class="result-row"><span>Starter</span> <span id="res-starter">0g</span></div>
             <hr>
-            <div class="result-row total">
-                <span>Total Weight</span>
-                <span id="res-total">0g</span>
+            <div class="result-row total"><span>Total Batch</span> <span id="res-total">0g</span></div>
+
+            <div id="levain-section" class="levain-builder hidden">
+                <h3>Levain Builder</h3>
+                <p class="levain-intro">You need <span id="levain-needed">0g</span> of starter.</p>
+                
+                <div class="input-group small-group">
+                    <label>Feed Ratio</label>
+                    <select id="levain-ratio">
+                        <option value="1">1:1:1 (Fast / 3-4 hrs)</option>
+                        <option value="2">1:2:2 (Standard / 6-8 hrs)</option>
+                        <option value="5" selected>1:5:5 (Overnight / 12 hrs)</option>
+                    </select>
+                </div>
+
+                <div class="levain-grid">
+                    <div><span>Seed Starter</span><strong id="lv-seed">0g</strong></div>
+                    <div><span>Feed Flour</span><strong id="lv-flour">0g</strong></div>
+                    <div><span>Feed Water</span><strong id="lv-water">0g</strong></div>
+                </div>
             </div>
         </section>
 
-        <footer>
-            <small>&copy; Artisan Web Tools</small>
-        </footer>
-    </main>
+        <section class="card temp-card">
+            <h2 id="temp-header" class="collapsible-header">Temp. Calculator <span>▼</span></h2>
+            <div id="temp-content" class="hidden-content">
+                <p class="tip-text">Calculate required water temp to hit your Target Dough Temp (DDT).</p>
+                
+                <div class="split-inputs">
+                    <div class="input-group"><label>Room °C</label><input type="number" id="temp-room" placeholder="21"></div>
+                    <div class="input-group"><label>Flour °C</label><input type="number" id="temp-flour" placeholder="21"></div>
+                </div>
+                
+                <div class="split-inputs">
+                    <div class="input-group"><label>Friction °C</label><input type="number" id="temp-friction" value="5"></div>
+                    <div class="input-group"><label>Target °C</label><input type="number" id="temp-target" value="26"></div>
+                </div>
 
+                <div class="result-row total" style="margin-top:1rem;">
+                    <span>Use Water At:</span>
+                    <span id="res-temp-water">--°C</span>
+                </div>
+                <button id="calc-temp-btn" class="secondary-btn">Calculate Temp</button>
+            </div>
+        </section>
+
+        <footer><small>&copy; Artisan Web Tools</small></footer>
+    </main>
     <script src="app.js"></script>
 </body>
 </html>
