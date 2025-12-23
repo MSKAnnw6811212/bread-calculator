@@ -1,262 +1,65 @@
-/* --- Variables & Reset --- */
 :root {
     --bg-paper: #f4f1ea;
     --text-primary: #1a1a1a;
     --text-secondary: #555555;
     --accent-gold: #cba35c;
+    --accent-alert: #d9534f; /* For warnings */
+    --accent-info: #5bc0de;   /* For info */
     --border-elegant: #e0dcd3;
     --font-serif: 'Playfair Display', serif;
     --font-sans: 'Lato', sans-serif;
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+/* Base Styles (Same as before) */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background-color: var(--bg-paper); color: var(--text-primary); font-family: var(--font-sans); line-height: 1.6; display: flex; justify-content: center; min-height: 100vh; padding: 20px; }
+.app-container { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem; }
 
-body {
-    background-color: var(--bg-paper);
-    color: var(--text-primary);
-    font-family: var(--font-sans);
-    line-height: 1.6;
-    display: flex;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 20px;
-}
+/* Typography & Layout */
+h1 { font-family: var(--font-serif); font-size: 2.5rem; text-align: center; color: var(--text-primary); }
+h2 { font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-elegant); padding-bottom: 0.5rem; }
+.subtitle { text-align: center; color: var(--accent-gold); font-family: var(--font-serif); font-style: italic; margin-bottom: 1rem; }
+.card { background: transparent; border: 1px solid var(--border-elegant); padding: 1.5rem; border-radius: 4px; position: relative; }
 
-/* --- Layout --- */
-.app-container {
-    width: 100%;
-    max-width: 480px; /* Mobile-first, card-like constraint */
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    margin-top: 2rem;
-}
+/* Inputs */
+.input-group { margin-bottom: 1rem; display: flex; flex-direction: column; }
+.split-inputs { display: flex; gap: 10px; }
+.split-inputs .input-group { flex: 1; }
+label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin-bottom: 0.3rem; }
+input, select { font-family: var(--font-sans); font-size: 1.1rem; padding: 10px; border: 1px solid var(--border-elegant); background-color: #fdfdfc; width: 100%; border-radius: 2px; }
+input:focus, select:focus { outline: none; border-color: var(--accent-gold); }
 
-/* --- Typography --- */
-h1, h2 {
-    font-family: var(--font-serif);
-    font-weight: 600;
-    color: var(--text-primary);
-}
+/* Mode Toggles */
+.mode-toggle-group { margin-bottom: 1.2rem; }
+.radio-group { display: flex; gap: 15px; margin-top: 0.5rem; }
+.radio-btn { display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 0.9rem; font-weight: 700; }
+input[type="radio"] { width: auto; accent-color: var(--accent-gold); transform: scale(1.2); }
 
-h1 {
-    font-size: 2.5rem;
-    letter-spacing: -0.02em;
-    text-align: center;
-    margin-bottom: 0.2rem;
-}
+/* Tips & Badges */
+.tip-box { background: #fff8e1; border-left: 3px solid var(--accent-gold); padding: 0.8rem; font-size: 0.9rem; margin-top: 0.5rem; font-style: italic; }
+.badge { background: #e8e6e1; color: var(--text-secondary); padding: 0.5rem; font-size: 0.85rem; border-radius: 4px; text-align: center; margin-bottom: 1rem; font-weight: 700; }
+.badge span { color: var(--text-primary); }
 
-.subtitle {
-    text-align: center;
-    color: var(--accent-gold);
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-}
+/* Levain Builder */
+.levain-builder { margin-top: 1.5rem; background: #fffcf5; border: 1px dashed var(--accent-gold); padding: 1rem; border-radius: 4px; }
+.levain-builder h3 { font-family: var(--font-serif); font-size: 1.1rem; color: var(--accent-gold); margin-bottom: 0.5rem; }
+.levain-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; text-align: center; font-size: 0.9rem; margin-top: 1rem; }
+.levain-grid strong { display: block; font-size: 1.1rem; color: var(--text-primary); }
 
-/* --- Cards --- */
-.card {
-    background: #ffffff; /* Slight lift from paper bg, or keep transparent for flatter look */
-    background: transparent;
-    border: 1px solid var(--border-elegant);
-    padding: 2rem;
-    border-radius: 4px;
-}
+/* Temp Calculator */
+.collapsible-header { display: flex; justify-content: space-between; cursor: pointer; border: none; }
+.hidden-content { display: none; margin-top: 1rem; }
+.hidden-content.open { display: block; }
+.secondary-btn { background-color: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 10px; font-weight: 700; width: 100%; margin-top: 1rem; cursor: pointer; }
+.secondary-btn:hover { background-color: var(--accent-gold); color: white; }
 
-.card h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border-elegant);
-    padding-bottom: 0.5rem;
-}
+/* Main Button */
+#calculate-btn { width: 100%; padding: 15px; background-color: var(--accent-gold); color: #fff; border: none; font-weight: 700; text-transform: uppercase; cursor: pointer; margin-top: 0.5rem; }
+#calculate-btn:hover { opacity: 0.9; }
 
-/* --- Inputs --- */
-.input-group {
-    margin-bottom: 1.5rem;
-    display: flex;
-    flex-direction: column;
-}
-
-label {
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-secondary);
-    margin-bottom: 0.5rem;
-}
-
-input {
-    font-family: var(--font-sans);
-    font-size: 1.2rem;
-    padding: 10px;
-    border: 1px solid var(--border-elegant);
-    background-color: #fdfdfc;
-    color: var(--text-primary);
-    border-radius: 2px;
-    transition: border-color 0.3s ease;
-}
-
-input:focus {
-    outline: none;
-    border-color: var(--accent-gold);
-}
-
-/* --- Buttons --- */
-button {
-    width: 100%;
-    padding: 15px;
-    background-color: var(--accent-gold);
-    color: #fff;
-    border: none;
-    font-family: var(--font-sans);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    cursor: pointer;
-    transition: opacity 0.3s ease;
-    margin-top: 1rem;
-}
-
-button:hover {
-    opacity: 0.9;
-}
-
-/* --- Results --- */
-.hidden {
-    display: none;
-}
-
-.result-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.8rem 0;
-    font-size: 1.1rem;
-}
-
-.result-row.total {
-    font-weight: 700;
-    font-family: var(--font-serif);
-    font-size: 1.3rem;
-    color: var(--accent-gold);
-}
-
-hr {
-    border: 0;
-    border-top: 1px solid var(--border-elegant);
-    margin: 1rem 0;
-}
-
-footer {
-    text-align: center;
-    color: var(--border-elegant); /* Very subtle footer */
-    margin-top: auto;
-}
-/* --- New Additions for V2 --- */
-
-/* The Dropdown Menu */
-select {
-    font-family: var(--font-serif); /* Serif makes it feel like a menu */
-    font-size: 1.1rem;
-    padding: 10px;
-    border: 1px solid var(--border-elegant);
-    background-color: #fdfdfc;
-    color: var(--text-primary);
-    border-radius: 2px;
-    width: 100%;
-    cursor: pointer;
-}
-
-/* Subtle Divider */
-.subtle-divider {
-    border: 0;
-    border-top: 1px dashed var(--border-elegant);
-    margin: 1.5rem 0;
-    opacity: 0.6;
-}
-
-/* Mode Toggles (Radio Buttons) */
-.mode-toggle {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 1.5rem;
-    align-items: center;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-}
-
-.mode-label {
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-weight: 700;
-}
-
-.radio-label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    cursor: pointer;
-    color: var(--text-primary);
-}
-
-/* Custom Accent for Radio Buttons */
-input[type="radio"] {
-    accent-color: var(--accent-gold);
-    transform: scale(1.2);
-}
-/* --- New Additions for V2 --- */
-
-/* The Dropdown Menu */
-select {
-    font-family: var(--font-serif); /* Serif makes it feel like a menu */
-    font-size: 1.1rem;
-    padding: 10px;
-    border: 1px solid var(--border-elegant);
-    background-color: #fdfdfc;
-    color: var(--text-primary);
-    border-radius: 2px;
-    width: 100%;
-    cursor: pointer;
-}
-
-/* Subtle Divider */
-.subtle-divider {
-    border: 0;
-    border-top: 1px dashed var(--border-elegant);
-    margin: 1.5rem 0;
-    opacity: 0.6;
-}
-
-/* Mode Toggles (Radio Buttons) */
-.mode-toggle {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 1.5rem;
-    align-items: center;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-}
-
-.mode-label {
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-weight: 700;
-}
-
-.radio-label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    cursor: pointer;
-    color: var(--text-primary);
-}
-
-/* Custom Accent for Radio Buttons */
-input[type="radio"] {
-    accent-color: var(--accent-gold);
-    transform: scale(1.2);
-}
+/* Utilities */
+.hidden { display: none; }
+.result-row { display: flex; justify-content: space-between; padding: 0.5rem 0; font-size: 1.1rem; }
+.result-row.total { font-weight: 700; font-family: var(--font-serif); font-size: 1.3rem; color: var(--accent-gold); }
+hr { border: 0; border-top: 1px solid var(--border-elegant); margin: 1rem 0; }
+footer { text-align: center; color: var(--border-elegant); margin-top: auto; }
