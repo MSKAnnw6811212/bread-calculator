@@ -19,10 +19,10 @@
             <p class="subtitle">Advanced Baker's Math</p>
         </header>
 
-        <section class="card">
-            <h2>Dough Formulation</h2>
+        <section class="card" aria-labelledby="form-title">
+            <h2 id="form-title">Dough Formulation</h2>
             
-            <div id="validation-msg" class="validation-box hidden"></div>
+            <div id="validation-msg" class="validation-box hidden" role="alert"></div>
 
             <div class="input-group">
                 <label for="recipe-preset">Recipe Preset</label>
@@ -41,8 +41,8 @@
             <hr class="subtle-divider">
 
             <div class="mode-toggle-group">
-                <label>Calculation Mode:</label>
-                <div class="radio-group">
+                <label id="mode-label">Calculation Mode:</label>
+                <div class="radio-group" role="radiogroup" aria-labelledby="mode-label">
                     <label class="radio-btn">
                         <input type="radio" name="calc-mode" value="flour" checked> 
                         <span>By Flour</span>
@@ -60,21 +60,21 @@
 
             <div id="input-mode-flour" class="input-group mode-box">
                 <label for="weight-flour">Total Flour (g)</label>
-                <input type="number" id="weight-flour" value="1000" inputmode="numeric">
+                <input type="number" id="weight-flour" value="1000" inputmode="numeric" placeholder="e.g. 1000">
             </div>
 
             <div id="input-mode-dough" class="input-group mode-box hidden">
                 <label for="weight-dough">Target Total Weight (g)</label>
-                <input type="number" id="weight-dough" value="1000" inputmode="numeric">
+                <input type="number" id="weight-dough" value="1000" inputmode="numeric" placeholder="e.g. 1000">
             </div>
 
             <div id="input-mode-batch" class="split-inputs mode-box hidden">
                 <div class="input-group">
-                    <label>Quantity</label>
+                    <label for="batch-count">Quantity</label>
                     <input type="number" id="batch-count" value="4" inputmode="numeric">
                 </div>
                 <div class="input-group">
-                    <label>Weight/Unit (g)</label>
+                    <label for="batch-unit">Weight/Unit (g)</label>
                     <input type="number" id="batch-unit" value="280" inputmode="numeric">
                 </div>
             </div>
@@ -88,20 +88,27 @@
                     <label for="salt">Salt %</label>
                     <input type="number" id="salt" value="2" inputmode="numeric">
                 </div>
-                <div class="input-group">
+            </div>
+
+            <div class="split-inputs">
+                 <div class="input-group">
                     <label for="starter">Starter %</label>
                     <input type="number" id="starter" value="20" inputmode="numeric">
                 </div>
+                <div class="input-group">
+                    <label for="starter-hydration" title="Hydration of your starter (usually 100%)">Starter Hydration %</label>
+                    <input type="number" id="starter-hydration" value="100" inputmode="numeric">
+                </div>
             </div>
 
-            <div id="true-hydration-badge" class="badge hidden">
+            <div id="true-hydration-badge" class="badge hidden" aria-live="polite">
                 True Hydration*: <span id="true-val">76%</span> <span id="hydration-desc"></span>
             </div>
 
             <button id="calculate-btn">Calculate Recipe</button>
         </section>
 
-        <section class="card results-section hidden" id="results">
+        <section class="card results-section hidden" id="results" aria-live="polite">
             <h2>Final Recipe</h2>
             <div class="result-row"><span>Flour</span> <span id="res-flour">0g</span></div>
             <div class="result-row"><span>Water</span> <span id="res-water">0g</span></div>
@@ -115,7 +122,7 @@
                 <p class="levain-intro">To get <span id="levain-needed">0g</span> starter:</p>
                 
                 <div class="input-group small-group">
-                    <label>Feed Ratio</label>
+                    <label for="levain-ratio">Feed Ratio</label>
                     <select id="levain-ratio">
                         <option value="1">1:1:1 (Fast / 3-4 hrs)</option>
                         <option value="2">1:2:2 (Standard / 6-8 hrs)</option>
@@ -132,18 +139,20 @@
         </section>
 
         <section class="card temp-card">
-            <h2 id="temp-header" class="collapsible-header">Temp. Calculator <span>▼</span></h2>
+            <h2 id="temp-header" class="collapsible-header" tabindex="0" role="button" aria-expanded="false">
+                Temp. Calculator <span>▼</span>
+            </h2>
             <div id="temp-content" class="hidden-content">
                 <p class="tip-text">Calculate required water temp for Target Dough Temp (DDT).</p>
                 
                 <div class="split-inputs">
-                    <div class="input-group"><label>Room °C</label><input type="number" id="temp-room" placeholder="21"></div>
-                    <div class="input-group"><label>Flour °C</label><input type="number" id="temp-flour" placeholder="21"></div>
+                    <div class="input-group"><label for="temp-room">Room °C</label><input type="number" id="temp-room" placeholder="21"></div>
+                    <div class="input-group"><label for="temp-flour">Flour °C</label><input type="number" id="temp-flour" placeholder="21"></div>
                 </div>
                 
                 <div class="split-inputs">
-                    <div class="input-group"><label>Friction °C</label><input type="number" id="temp-friction" value="5"></div>
-                    <div class="input-group"><label>Target °C</label><input type="number" id="temp-target" value="26"></div>
+                    <div class="input-group"><label for="temp-friction">Friction °C</label><input type="number" id="temp-friction" value="5"></div>
+                    <div class="input-group"><label for="temp-target">Target °C</label><input type="number" id="temp-target" value="26"></div>
                 </div>
 
                 <div class="result-row total" style="margin-top:1rem;">
