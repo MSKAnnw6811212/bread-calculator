@@ -22,6 +22,8 @@
         <section class="card">
             <h2>Dough Formulation</h2>
             
+            <div id="validation-msg" class="validation-box hidden"></div>
+
             <div class="input-group">
                 <label for="recipe-preset">Recipe Preset</label>
                 <select id="recipe-preset">
@@ -30,8 +32,8 @@
                     <option value="focaccia">Focaccia (High Hydration)</option>
                     <option value="pizza">Neapolitan Pizza</option>
                     <option value="bagel">NY Style Bagel</option>
-                    <option value="wholewheat">Whole Wheat (thirsty)</option>
                     <option value="ciabatta">Ciabatta</option>
+                    <option value="wholewheat">Whole Wheat (Thirsty)</option>
                 </select>
                 <div id="recipe-tip" class="tip-box hidden"></div>
             </div>
@@ -39,7 +41,7 @@
             <hr class="subtle-divider">
 
             <div class="mode-toggle-group">
-                <label>Mode:</label>
+                <label>Calculation Mode:</label>
                 <div class="radio-group">
                     <label class="radio-btn">
                         <input type="radio" name="calc-mode" value="flour" checked> 
@@ -47,23 +49,39 @@
                     </label>
                     <label class="radio-btn">
                         <input type="radio" name="calc-mode" value="dough"> 
-                        <span>Total</span>
+                        <span>Total Dough</span>
                     </label>
                     <label class="radio-btn">
                         <input type="radio" name="calc-mode" value="batch"> 
-                        <span>Batch</span>
+                        <span>Batch Count</span>
                     </label>
                 </div>
             </div>
 
-            <div id="input-area" class="input-group">
-                <label for="primary-weight">Total Flour (g)</label>
-                <input type="number" id="primary-weight" value="1000" inputmode="numeric">
+            <div id="input-mode-flour" class="input-group mode-box">
+                <label for="weight-flour">Total Flour (g)</label>
+                <input type="number" id="weight-flour" value="1000" inputmode="numeric">
+            </div>
+
+            <div id="input-mode-dough" class="input-group mode-box hidden">
+                <label for="weight-dough">Target Total Weight (g)</label>
+                <input type="number" id="weight-dough" value="1000" inputmode="numeric">
+            </div>
+
+            <div id="input-mode-batch" class="split-inputs mode-box hidden">
+                <div class="input-group">
+                    <label>Quantity</label>
+                    <input type="number" id="batch-count" value="4" inputmode="numeric">
+                </div>
+                <div class="input-group">
+                    <label>Weight/Unit (g)</label>
+                    <input type="number" id="batch-unit" value="280" inputmode="numeric">
+                </div>
             </div>
 
             <div class="split-inputs">
                 <div class="input-group">
-                    <label for="hydration">Hydration %</label>
+                    <label for="hydration">Water (Added) %</label>
                     <input type="number" id="hydration" value="75" inputmode="numeric">
                 </div>
                 <div class="input-group">
@@ -77,7 +95,7 @@
             </div>
 
             <div id="true-hydration-badge" class="badge hidden">
-                True Hydration: <span id="true-val">76%</span> <span id="hydration-desc">(Moderate)</span>
+                True Hydration*: <span id="true-val">76%</span> <span id="hydration-desc"></span>
             </div>
 
             <button id="calculate-btn">Calculate Recipe</button>
@@ -94,7 +112,7 @@
 
             <div id="levain-section" class="levain-builder hidden">
                 <h3>Levain Builder</h3>
-                <p class="levain-intro">You need <span id="levain-needed">0g</span> of starter.</p>
+                <p class="levain-intro">To get <span id="levain-needed">0g</span> starter:</p>
                 
                 <div class="input-group small-group">
                     <label>Feed Ratio</label>
@@ -106,9 +124,9 @@
                 </div>
 
                 <div class="levain-grid">
-                    <div><span>Seed Starter</span><strong id="lv-seed">0g</strong></div>
-                    <div><span>Feed Flour</span><strong id="lv-flour">0g</strong></div>
-                    <div><span>Feed Water</span><strong id="lv-water">0g</strong></div>
+                    <div><span>Seed</span><strong id="lv-seed">0g</strong></div>
+                    <div><span>Flour</span><strong id="lv-flour">0g</strong></div>
+                    <div><span>Water</span><strong id="lv-water">0g</strong></div>
                 </div>
             </div>
         </section>
@@ -116,7 +134,7 @@
         <section class="card temp-card">
             <h2 id="temp-header" class="collapsible-header">Temp. Calculator <span>▼</span></h2>
             <div id="temp-content" class="hidden-content">
-                <p class="tip-text">Calculate required water temp to hit your Target Dough Temp (DDT).</p>
+                <p class="tip-text">Calculate required water temp for Target Dough Temp (DDT).</p>
                 
                 <div class="split-inputs">
                     <div class="input-group"><label>Room °C</label><input type="number" id="temp-room" placeholder="21"></div>
