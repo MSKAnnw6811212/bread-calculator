@@ -86,3 +86,38 @@ input.error {
     border-color: var(--accent-alert);
     background-color: #fff5f5;
 }
+
+/* --- Additions for V3 (Mobile & Accessibility) --- */
+
+/* Better touch targets for mobile */
+input, select { 
+    min-height: 48px; /* Recommended touch target size */
+    font-size: 16px; /* Prevents auto-zoom on iOS */
+    padding: 10px 12px;
+}
+
+/* Error State */
+input.error-border {
+    border-color: var(--accent-alert);
+    background-color: #fff5f5;
+}
+
+/* Validation Message */
+.validation-box {
+    background-color: #fdecea;
+    border-left: 4px solid var(--accent-alert);
+    color: #b91c1c; /* Darker red for contrast compliance */
+    padding: 1rem;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+    font-weight: 700;
+}
+
+/* Helper for starter hydration tooltip if needed */
+label[title] {
+    text-decoration: underline dotted;
+    cursor: help;
+}
+
+/* ... (Keep previous styles) ... */
