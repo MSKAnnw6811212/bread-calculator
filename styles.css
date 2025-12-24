@@ -63,3 +63,26 @@ input[type="radio"] { width: auto; accent-color: var(--accent-gold); transform: 
 .result-row.total { font-weight: 700; font-family: var(--font-serif); font-size: 1.3rem; color: var(--accent-gold); }
 hr { border: 0; border-top: 1px solid var(--border-elegant); margin: 1rem 0; }
 footer { text-align: center; color: var(--border-elegant); margin-top: auto; }
+
+/* --- Validation & Errors --- */
+.validation-box {
+    background-color: #fdecea;
+    border-left: 3px solid var(--accent-alert);
+    color: var(--accent-alert);
+    padding: 0.8rem;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    border-radius: 2px;
+    font-weight: 700;
+}
+
+/* Ensure hidden elements are actually removed from flow */
+.hidden {
+    display: none !important;
+}
+
+/* Optional: Input Invalid State */
+input.error {
+    border-color: var(--accent-alert);
+    background-color: #fff5f5;
+}
