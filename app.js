@@ -1,43 +1,58 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- DATA: Recipes & Presets ---
+    // --- CONSTANTS & CONFIG ---
+    // Assumption: Starter is 100% hydration (Equal parts flour/water)
+    const STARTER_HYDRATION = 100; 
+
+    // Refactored Data Structure (Clear variable names)
     const recipes = {
-        sourdough:  { h: 75, s: 2, st: 20, tip: "Classic rustic loaf. Good for beginners." },
-        focaccia:   { h: 85, s: 2.5, st: 15, tip: "Very sticky dough. Use olive oil on hands!" },
-        pizza:      { h: 62, s: 3, st: 15, tip: "Stiffer dough for high heat ovens." },
-        bagel:      { h: 58, s: 2, st: 1, tip: "Extremely stiff. Requires kneader or muscle." },
-        ciabatta:   { h: 80, s: 2.2, st: 40, tip: "High starter amount for flavor and structure." },
-        wholewheat: { h: 80, s: 2, st: 20, tip: "Whole wheat is thirsty. We increased hydration to 80%." }
+        sourdough:  { hydration: 75, salt: 2, starter: 20, tip: "Classic rustic loaf. Good for beginners." },
+        focaccia:   { hydration: 85, salt: 2.5, starter: 15, tip: "Very sticky dough. Use olive oil on hands!" },
+        pizza:      { hydration: 62, salt: 3, starter: 15, tip: "Stiffer dough for high heat ovens." },
+        bagel:      { hydration: 58, salt: 2, starter: 1, tip: "Extremely stiff. Requires kneader or muscle." },
+        ciabatta:   { hydration: 80, salt: 2.2, starter: 40, tip: "High starter amount for flavor and structure." },
+        wholewheat: { hydration: 80, salt: 2, starter: 20, tip: "Whole wheat is thirsty. Hydration increased." }
     };
 
     // --- DOM ELEMENTS ---
     const els = {
         modeRadios: document.querySelectorAll('input[name="calc-mode"]'),
-        inputArea: document.getElementById('input-area'),
-        preset: document.getElementById('recipe-preset'),
-        tipBox: document.getElementById('recipe-tip'),
         
+        // Mode Containers (We toggle these instead of overwriting innerHTML)
+        containerFlour: document.getElementById('input-mode-flour'),
+        containerDough: document.getElementById('input-mode-dough'),
+        containerBatch: document.getElementById('input-mode-batch'),
+
         // Inputs
-        inputWeight: document.getElementById('primary-weight'), // Will change ID dynamically
+        inputFlour: document.getElementById('weight-flour'),
+        inputDough: document.getElementById('weight-dough'),
+        inputBatchCount: document.getElementById('batch-count'),
+        inputBatchUnit: document.getElementById('batch-unit'),
+        
         hydration: document.getElementById('hydration'),
         salt: document.getElementById('salt'),
         starter: document.getElementById('starter'),
+        preset: document.getElementById('recipe-preset'),
 
-        // Badges & Results
+        // Feedback
+        tipBox: document.getElementById('recipe-tip'),
+        errorBox: document.getElementById('validation-msg'),
         calcBtn: document.getElementById('calculate-btn'),
         results: document.getElementById('results'),
+        
+        // Badges
         trueBadge: document.getElementById('true-hydration-badge'),
         trueVal: document.getElementById('true-val'),
         trueDesc: document.getElementById('hydration-desc'),
 
-        // Result Rows
+        // Outputs
         rFlour: document.getElementById('res-flour'),
         rWater: document.getElementById('res-water'),
         rSalt: document.getElementById('res-salt'),
         rStarter: document.getElementById('res-starter'),
         rTotal: document.getElementById('res-total'),
 
-        // Levain Builder
+        // Levain
         levainSec: document.getElementById('levain-section'),
         levainNeeded: document.getElementById('levain-needed'),
         levainRatio: document.getElementById('levain-ratio'),
@@ -45,118 +60,187 @@ document.addEventListener('DOMContentLoaded', () => {
         lvFlour: document.getElementById('lv-flour'),
         lvWater: document.getElementById('lv-water'),
 
-        // Temp Calc
+        // Temp
         tempHeader: document.getElementById('temp-header'),
         tempContent: document.getElementById('temp-content'),
         calcTempBtn: document.getElementById('calc-temp-btn')
     };
 
-    let currentMode = 'flour';
+    // --- 1. UI LOGIC ---
 
-    // --- 1. CORE: UI State Management ---
-    
     function updateInputMode() {
-        currentMode = document.querySelector('input[name="calc-mode"]:checked').value;
-        let html = '';
+        const mode = document.querySelector('input[name="calc-mode"]:checked').value;
+        
+        // Hide all, then show selected
+        els.containerFlour.classList.add('hidden');
+        els.containerDough.classList.add('hidden');
+        els.containerBatch.classList.add('hidden');
 
-        if (currentMode === 'flour') {
-            html = `<label>Total Flour (g)</label><input type="number" id="primary-weight" value="1000">`;
-        } else if (currentMode === 'dough') {
-            html = `<label>Target Total Dough Weight (g)</label><input type="number" id="primary-weight" value="1000">`;
-        } else if (currentMode === 'batch') {
-            html = `
-                <div class="split-inputs">
-                    <div class="input-group"><label>Unit Count</label><input type="number" id="batch-count" value="4"></div>
-                    <div class="input-group"><label>Weight/Unit (g)</label><input type="number" id="batch-unit" value="280"></div>
-                </div>`;
-        }
-        els.inputArea.innerHTML = html;
+        if (mode === 'flour') els.containerFlour.classList.remove('hidden');
+        if (mode === 'dough') els.containerDough.classList.remove('hidden');
+        if (mode === 'batch') els.containerBatch.classList.remove('hidden');
+        
+        // Clear errors when switching
+        showError(null);
     }
 
     function loadPreset() {
         const key = els.preset.value;
         const data = recipes[key];
+        
         if (!data) {
             els.tipBox.classList.add('hidden');
             return;
         }
 
-        // Set values
-        els.hydration.value = data.h;
-        els.salt.value = data.s;
-        els.starter.value = data.st;
+        els.hydration.value = data.hydration;
+        els.salt.value = data.salt;
+        els.starter.value = data.starter;
 
-        // Show tip
         els.tipBox.textContent = data.tip;
         els.tipBox.classList.remove('hidden');
-
-        // Visual flash
+        
+        // Visual flash feedback
         els.hydration.style.backgroundColor = '#f0f7f4';
         setTimeout(() => els.hydration.style.backgroundColor = '#fdfdfc', 300);
     }
 
-    // --- 2. CORE: The Math Engine ---
+    function showError(msg) {
+        if (msg) {
+            els.errorBox.textContent = msg;
+            els.errorBox.classList.remove('hidden');
+            els.results.classList.add('hidden'); // Hide results on error
+        } else {
+            els.errorBox.classList.add('hidden');
+        }
+    }
 
-    function getHydrationDescription(pct) {
-        if (pct < 65) return "Stiff / Easy";
-        if (pct < 73) return "Standard / Moderate";
-        if (pct < 80) return "Wet / Advanced";
-        return "Very Wet / Expert";
+    // --- 2. VALIDATION & MATH ---
+
+    function validateInputs() {
+        // Helper to check single value
+        const check = (val, name) => {
+            if (isNaN(val)) return `${name} must be a number.`;
+            if (val < 0) return `${name} cannot be negative.`;
+            return null;
+        };
+
+        const h = parseFloat(els.hydration.value);
+        const s = parseFloat(els.salt.value);
+        const st = parseFloat(els.starter.value);
+
+        // Check Ratios
+        let err = check(h, 'Hydration') || check(s, 'Salt') || check(st, 'Starter');
+        if (err) return err;
+
+        // Check High Hydration Warning (Logic Check)
+        if (h > 120) return "Hydration is over 120%. This is likely a soup, not dough. Please check your input.";
+
+        // Check Main Weight based on mode
+        const mode = document.querySelector('input[name="calc-mode"]:checked').value;
+        if (mode === 'flour') {
+            if (parseFloat(els.inputFlour.value) <= 0) return "Please enter a valid Flour weight.";
+        } else if (mode === 'dough') {
+            if (parseFloat(els.inputDough.value) <= 0) return "Please enter a valid Total Dough weight.";
+        } else if (mode === 'batch') {
+            if (parseFloat(els.inputBatchCount.value) <= 0 || parseFloat(els.inputBatchUnit.value) <= 0) 
+                return "Please enter valid Batch details.";
+        }
+
+        return null; // No errors
     }
 
     function calculate() {
-        // 1. Get Ratios
-        const hPct = parseFloat(els.hydration.value) || 0;
-        const sPct = parseFloat(els.salt.value) || 0;
-        const stPct = parseFloat(els.starter.value) || 0;
+        // 1. Validate
+        const error = validateInputs();
+        if (error) {
+            showError(error);
+            return;
+        }
+        showError(null); // Clear errors
 
+        // 2. Get Ratios
+        const hPct = parseFloat(els.hydration.value);
+        const sPct = parseFloat(els.salt.value);
+        const stPct = parseFloat(els.starter.value);
+        
         let flour = 0;
+        let targetTotal = 0; // Used for reverse mode check
+        const mode = document.querySelector('input[name="calc-mode"]:checked').value;
 
-        // 2. Determine Flour Weight based on Mode
-        if (currentMode === 'flour') {
-            flour = parseFloat(document.getElementById('primary-weight').value) || 0;
-        } 
-        else if (currentMode === 'dough') {
-            const totalTarget = parseFloat(document.getElementById('primary-weight').value) || 0;
+        // 3. Determine Base Flour Weight
+        if (mode === 'flour') {
+            flour = parseFloat(els.inputFlour.value);
+        } else {
+            // Calculate Total Target
+            if (mode === 'dough') targetTotal = parseFloat(els.inputDough.value);
+            if (mode === 'batch') targetTotal = parseFloat(els.inputBatchCount.value) * parseFloat(els.inputBatchUnit.value);
+            
+            // Reverse Math: Flour = Total / (1 + sum of decimals)
             const totalPct = 100 + hPct + sPct + stPct;
-            flour = (totalTarget / totalPct) * 100;
-        } 
-        else if (currentMode === 'batch') {
-            const count = parseFloat(document.getElementById('batch-count').value) || 0;
-            const unit = parseFloat(document.getElementById('batch-unit').value) || 0;
-            const totalTarget = count * unit;
-            const totalPct = 100 + hPct + sPct + stPct;
-            flour = (totalTarget / totalPct) * 100;
+            flour = (targetTotal / totalPct) * 100;
         }
 
-        // 3. Calculate Ingredients
-        const water = flour * (hPct / 100);
-        const salt = flour * (sPct / 100);
-        const starter = flour * (stPct / 100);
-        const total = flour + water + salt + starter;
+        // 4. Calculate Ingredients
+        let water = flour * (hPct / 100);
+        let salt = flour * (sPct / 100);
+        let starter = flour * (stPct / 100);
 
-        // 4. "True Hydration" Logic (Assume Starter is 100% hydration: half flour, half water)
-        const totalWater = water + (starter / 2);
-        const totalFlour = flour + (starter / 2);
-        const trueHydration = (totalWater / totalFlour) * 100;
+        // 5. Rounding & Check
+        // If we are in "Total" mode, we want the sum to exactly match the input.
+        // Rounding errors usually result in +/- 1g. We dump the difference into Water.
+        
+        let rFlour = Math.round(flour);
+        let rSalt = Math.round(salt);
+        let rStarter = Math.round(starter);
+        let rWater = Math.round(water);
 
-        // 5. Update UI Results
-        els.rFlour.textContent = Math.round(flour) + 'g';
-        els.rWater.textContent = Math.round(water) + 'g';
-        els.rSalt.textContent = Math.round(salt) + 'g';
-        els.rStarter.textContent = Math.round(starter) + 'g';
-        els.rTotal.textContent = Math.round(total) + 'g';
+        if (mode !== 'flour') {
+            const currentSum = rFlour + rSalt + rStarter + rWater;
+            const diff = Math.round(targetTotal) - currentSum;
+            
+            if (diff !== 0) {
+                // Adjust water to make the math perfect
+                rWater += diff;
+            }
+        }
 
-        // 6. Update True Hydration Badge
+        const rTotal = rFlour + rWater + rSalt + rStarter;
+
+        // 6. True Hydration Logic
+        // Assumption: Starter is 50% flour, 50% water (100% hydration)
+        const starterFlour = starter * 0.5;
+        const starterWater = starter * 0.5;
+        
+        const totalWaterVal = water + starterWater;
+        const totalFlourVal = flour + starterFlour;
+        const trueHydration = (totalWaterVal / totalFlourVal) * 100;
+
+        // 7. Update UI
+        els.rFlour.textContent = rFlour + 'g';
+        els.rWater.textContent = rWater + 'g';
+        els.rSalt.textContent = rSalt + 'g';
+        els.rStarter.textContent = rStarter + 'g';
+        els.rTotal.textContent = rTotal + 'g';
+
+        // Update Badge
         els.trueVal.textContent = trueHydration.toFixed(1) + '%';
-        els.trueDesc.textContent = `(${getHydrationDescription(trueHydration)})`;
+        els.trueDesc.textContent = getHydrationDescription(trueHydration);
         els.trueBadge.classList.remove('hidden');
 
-        // 7. Update Levain Builder
-        updateLevainBuilder(starter);
+        // Update Levain
+        updateLevainBuilder(rStarter);
         
+        // Show Results
         els.results.classList.remove('hidden');
         els.results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function getHydrationDescription(pct) {
+        if (pct < 65) return "(Stiff)";
+        if (pct < 73) return "(Standard)";
+        if (pct < 80) return "(Wet)";
+        return "(Very Wet)";
     }
 
     function updateLevainBuilder(targetStarterWeight) {
@@ -165,13 +249,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         els.levainSec.classList.remove('hidden');
-        els.levainNeeded.textContent = Math.round(targetStarterWeight) + 'g';
+        els.levainNeeded.textContent = targetStarterWeight + 'g';
 
-        // Parse Ratio (e.g. 5 from "1:5:5")
-        // Formula: Total Parts = 1 + ratio + ratio. 
-        // Example 1:5:5 = 11 parts.
-        // Seed = Total / 11. Flour = Seed * 5. Water = Seed * 5.
         const ratio = parseFloat(els.levainRatio.value);
+        // Formula: 1:5:5 = 11 parts total
         const totalParts = 1 + ratio + ratio;
         const seed = targetStarterWeight / totalParts;
 
@@ -180,28 +261,25 @@ document.addEventListener('DOMContentLoaded', () => {
         els.lvWater.textContent = Math.round(seed * ratio) + 'g';
     }
 
-    // --- 3. Temp Calculator Logic ---
+    // --- 3. TEMP CALCULATOR ---
     function calculateTemp() {
         const room = parseFloat(document.getElementById('temp-room').value) || 0;
         const flour = parseFloat(document.getElementById('temp-flour').value) || 0;
         const friction = parseFloat(document.getElementById('temp-friction').value) || 0;
         const target = parseFloat(document.getElementById('temp-target').value) || 26;
 
-        // Formula: (Target * 3) - (Room + Flour + Friction)
         const waterTemp = (target * 3) - (room + flour + friction);
-        
         const resEl = document.getElementById('res-temp-water');
-        resEl.textContent = Math.round(waterTemp) + "°C";
         
-        if(waterTemp > 45) { resEl.style.color = 'var(--accent-alert)'; } // Warning if too hot
-        else { resEl.style.color = 'var(--text-primary)'; }
+        resEl.textContent = Math.round(waterTemp) + "°C";
+        resEl.style.color = waterTemp > 45 ? '#d9534f' : 'inherit';
     }
 
-    // --- 4. Event Listeners ---
+    // --- 4. LISTENERS ---
     els.modeRadios.forEach(r => r.addEventListener('change', updateInputMode));
     els.preset.addEventListener('change', loadPreset);
     els.calcBtn.addEventListener('click', calculate);
-    els.levainRatio.addEventListener('change', () => calculate()); // Recalc levain if ratio changes
+    els.levainRatio.addEventListener('change', () => calculate());
     els.calcTempBtn.addEventListener('click', calculateTemp);
     
     // Toggle Temp Card
